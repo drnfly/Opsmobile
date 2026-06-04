@@ -1,0 +1,132 @@
+{
+  "theme": "Light",
+  "archetype": "4 (Swiss & High-Contrast)",
+  "brand": {
+    "name": "Concrete Form",
+    "description": "A field-ops mobile-first web app for concrete/ICF contractors on jobsites. Designed for foremen and crews wearing gloves.",
+    "emotional_tone": "Utilitarian, authoritative, clear, precise, rugged but modern."
+  },
+  "colors": {
+    "background": {
+      "default": "#FFFFFF",
+      "muted": "#F4F4F5",
+      "card": "#FFFFFF"
+    },
+    "text": {
+      "primary": "#09090B",
+      "secondary": "#52525B",
+      "muted": "#A1A1AA",
+      "inverse": "#FFFFFF"
+    },
+    "primary": {
+      "default": "#FF6A00",
+      "hover": "#E65C00",
+      "foreground": "#FFFFFF"
+    },
+    "border": {
+      "default": "#E4E4E7",
+      "focus": "#FF6A00"
+    },
+    "status": {
+      "success": "#16A34A",
+      "warning": "#F59E0B",
+      "error": "#DC2626",
+      "info": "#2563EB"
+    }
+  },
+  "typography": {
+    "font_families": {
+      "display": "'Chivo', 'Archivo', 'Barlow Condensed', sans-serif",
+      "body": "'Inter', 'IBM Plex Sans', sans-serif",
+      "mono": "'JetBrains Mono', 'Space Mono', monospace"
+    },
+    "scale": {
+      "h1": "text-4xl md:text-5xl font-black tracking-tight uppercase",
+      "h2": "text-2xl md:text-3xl font-bold tracking-tight",
+      "h3": "text-xl font-bold tracking-tight",
+      "body": "text-base leading-relaxed",
+      "numbers": "font-mono tracking-tight",
+      "label": "text-sm font-bold tracking-[0.1em] uppercase text-zinc-500"
+    }
+  },
+  "spacing_and_layout": {
+    "philosophy": "Mobile-first, dense but legible. Large tap targets are absolutely critical for gloved use.",
+    "tap_targets": "Minimum 48px height for all interactive elements (h-12, h-14, or h-16).",
+    "corners": "Sharp edges. Use rounded-none or maximum rounded-sm (2px) for a rugged, technical feel.",
+    "containers": "Use full width on mobile, max-w-md or max-w-3xl on larger screens to keep form inputs accessible.",
+    "cards": "border border-zinc-200 bg-white p-4 or p-6 shadow-sm. No soft blurry shadows. If using shadow, use a crisp drop shadow."
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-[#FF6A00] text-white hover:bg-[#E65C00] h-14 px-6 font-bold uppercase tracking-wide flex items-center justify-center transition-colors",
+      "secondary": "bg-zinc-900 text-white hover:bg-zinc-800 h-14 px-6 font-bold uppercase tracking-wide flex items-center justify-center transition-colors",
+      "outline": "border-2 border-zinc-200 bg-transparent text-zinc-900 hover:border-zinc-900 h-14 px-6 font-bold uppercase tracking-wide flex items-center justify-center transition-colors",
+      "ghost": "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 h-14 px-6 font-bold flex items-center justify-center transition-colors"
+    },
+    "inputs": {
+      "default": "h-14 w-full border-2 border-zinc-200 bg-white px-4 text-base font-medium focus:border-[#FF6A00] focus:ring-0 transition-colors",
+      "numbers": "font-mono text-lg"
+    },
+    "tabs": {
+      "list": "flex w-full overflow-x-auto border-b-2 border-zinc-200 no-scrollbar",
+      "trigger": "h-14 px-6 font-bold text-zinc-500 whitespace-nowrap data-[state=active]:text-[#FF6A00] data-[state=active]:border-b-2 data-[state=active]:border-[#FF6A00] -mb-[2px]"
+    },
+    "bottom_nav": {
+      "container": "fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-zinc-200 flex justify-around items-center z-50 pb-safe",
+      "item": "flex flex-col items-center justify-center w-full h-full text-zinc-500 data-[active=true]:text-[#FF6A00]"
+    }
+  },
+  "iconography": {
+    "library": "lucide-react",
+    "style": "stroke-width 2.5 or 3 for better visibility on construction sites. Sharp, clear icons."
+  },
+  "image_urls": [
+    {
+      "url": "https://images.unsplash.com/photo-1644221150167-fb4fafa7f411?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzJ8MHwxfHNlYXJjaHwxfHxjb25jcmV0ZSUyMGNvbnN0cnVjdGlvbiUyMHNpdGV8ZW58MHx8fHwxNzgwNjAzMzE1fDA&ixlib=rb-4.1.0&q=85",
+      "category": "hero",
+      "description": "building under construction with crane (backgrounds, hero sections)"
+    },
+    {
+      "url": "https://images.unsplash.com/photo-1669170930713-f7c778496177?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzJ8MHwxfHNlYXJjaHwzfHxjb25jcmV0ZSUyMGNvbnN0cnVjdGlvbiUyMHNpdGV8ZW58MHx8fHwxNzgwNjAzMzE1fDA&ixlib=rb-4.1.0&q=85",
+      "category": "action",
+      "description": "person pouring/working with concrete (onboarding, feature highlights)"
+    },
+    {
+      "url": "https://images.pexels.com/photos/28681433/pexels-photo-28681433.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "category": "detail",
+      "description": "detailed view of gloved hands of a worker (login, authentic field context)"
+    },
+    {
+      "url": "https://images.unsplash.com/photo-1690473768476-44b5cebb7d80?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTF8MHwxfHNlYXJjaHwxfHxjb25zdHJ1Y3Rpb24lMjB3b3JrZXIlMjBnbG92ZXN8ZW58MHx8fHwxNzgwNjAzMzE1fDA&ixlib=rb-4.1.0&q=85",
+      "category": "profile",
+      "description": "construction worker with helmet and gloves (user profile, dashboard headers)"
+    },
+    {
+      "url": "https://images.unsplash.com/photo-1527410651988-c2f385ccd3f7?crop=entropy&cs=srgb&fm=jpg&ixid=M3w7NDQ2Mzl8MHwxfHNlYXJjaHwyfHxjb25jcmV0ZSUyMG1peGVyJTIwdHJ1Y2t8ZW58MHx8fHwxNzgwNjAzMzE1fDA&ixlib=rb-4.1.0&q=85",
+      "category": "equipment",
+      "description": "concrete mixer truck (equipment inventory, rentals)"
+    },
+    {
+      "url": "https://images.unsplash.com/photo-1721244654392-9c912a6eb236?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwyfHxjb25zdHJ1Y3Rpb24lMjBibHVlcHJpbnR8ZW58MHx8fHwxNzgwNjAzMzE1fDA&ixlib=rb-4.1.0&q=85",
+      "category": "abstract",
+      "description": "blueprint of building (calculator backgrounds, auth screens)"
+    }
+  ],
+  "accessibility_and_interactions": {
+    "focus": "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6A00] focus-visible:ring-offset-2",
+    "motion": "Fast, mechanical transitions. duration-150 ease-out.",
+    "testing": "All interactive elements MUST include data-testid attribute in kebab-case."
+  },
+  "instructions_to_main_agent": [
+    "This is a hybrid_fullstack app tailored for mobile-first rendering. Ensure layout wrappers (like max-w-md mx-auto) are used to simulate mobile views on desktop if necessary, or build it completely responsive.",
+    "Implement bottom-tab + drawer navigation architecture.",
+    "Ensure all tap targets (buttons, inputs, dropdown items) have a minimum height of 48px (h-12) to accommodate gloved users. Preferred size is h-14 (56px).",
+    "Use strict Swiss styling: white backgrounds, thick black borders where needed, sharp corners (rounded-none or max rounded-sm), and the safety-orange accent color (#FF6A00).",
+    "Use monospace font for all numeric outputs, measurements, and calculation results.",
+    "Do NOT use soft gradients or glassmorphism. Use flat colors and solid borders.",
+    "For the UI, avoid card roundness. Use sharp corners.",
+    "Integrate the provided real-world construction images instead of generic tech placeholders.",
+    "Install and use 'lucide-react' for icons. Make them slightly bolder if possible.",
+    "Ensure Shadcn UI components are customized to match this rigid, boxy, high-contrast style by overriding default border-radius and heights."
+  ]
+}
