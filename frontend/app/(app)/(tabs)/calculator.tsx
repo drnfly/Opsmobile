@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { Screen } from "@/src/components/Screen";
 import { Card, Input, Button, Mono, SectionLabel, Pill, Row } from "@/src/components/ui";
+import { Ionicons } from "@expo/vector-icons";
 import { colors, spacing, type as typo } from "@/src/theme";
 import {
   parseFeetInches, formatFtInFrac, formatDecimalFt, formatTotalInches,
@@ -171,40 +172,89 @@ function BlocksTab() {
   );
 }
 
-/* ----- Rebar takeoff ----- */
+/* ----- Rebar takeoff (multi-run) ----- */
+type RebarRun = { name: string; length: string; height: string; vert: string; horiz: string };
+
 function RebarTab() {
-  const [length, setLength] = useState("40");
-  const [height, setHeight] = useState("9");
-  const [vert, setVert] = useState("12");
-  const [horiz, setHoriz] = useState("16");
+  const [runs, setRuns] = useState<RebarRun[]>([
+    { name: "Run A", length: "40", height: "9", vert: "12", horiz: "16" },
+  ]);
   const [bar, setBar] = useState("5");
   const [stick, setStick] = useState("20");
-  const out = rebarTakeoff(
-    parseFloat(length || "0"), parseFloat(height || "0"),
-    parseFloat(vert || "0"), parseFloat(horiz || "0"),
-    bar, parseFloat(stick || "0"),
+
+  const update = (i: number, key: keyof RebarRun, v: string) =>
+    setRuns((rs) => rs.map((r, idx) => (idx === i ? { ...r, [key]: v } : r)));
+
+  const addRun = () =>
+    setRuns((rs) => [
+      ...rs,
+      { name: `Run ${String.fromCharCode(65 + rs.length)}`, length: "0", height: "0", vert: "12", horiz: "16" },
+    ]);
+
+  const removeRun = (i: number) => setRuns((rs) => rs.filter((_, idx) => idx !== i));
+
+  const perRun = runs.map((r) =>
+    rebarTakeoff(
+      parseFloat(r.length || "0"), parseFloat(r.height || "0"),
+      parseFloat(r.vert || "0"), parseFloat(r.horiz || "0"),
+      bar, parseFloat(stick || "0"),
+    ),
   );
+  const totals = perRun.reduce(
+    (acc, o) => ({
+      vertBars: acc.vertBars + o.vertBars,
+      horizBars: acc.horizBars + o.horizBars,
+      totalLf: acc.totalLf + o.totalLf,
+      weightLb: acc.weightLb + o.weightLb,
+      sticks: acc.sticks + o.sticks,
+    }),
+    { vertBars: 0, horizBars: 0, totalLf: 0, weightLb: 0, sticks: 0 },
+  );
+
   return (
     <>
-      <SectionLabel>Rebar takeoff</SectionLabel>
+      <SectionLabel>Rebar takeoff — wall runs</SectionLabel>
+
+      {runs.map((r, i) => (
+        <Card key={i} style={{ marginBottom: spacing.md }} testID={`rebar-run-card-${i}`}>
+          <Row style={{ justifyContent: "space-between", marginBottom: spacing.sm }}>
+            <Text style={[typo.h3, { fontSize: 16 }]}>{r.name}</Text>
+            {runs.length > 1 ? (
+              <TouchableOpacity onPress={() => removeRun(i)} testID={`rebar-remove-run-${i}`}>
+                <Ionicons name="close" size={22} color={colors.error} />
+              </TouchableOpacity>
+            ) : null}
+          </Row>
+          <Input label="Name" value={r.name} onChangeText={(t) => update(i, "name", t)} testID={`rebar-run-name-${i}`} />
+          <Row style={{ gap: spacing.md }}>
+            <View style={{ flex: 1 }}>
+              <Input label="Wall L (ft)" value={r.length} onChangeText={(t) => update(i, "length", t)} keyboardType="decimal-pad" mono testID={`rebar-run-length-${i}`} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Input label="Wall H (ft)" value={r.height} onChangeText={(t) => update(i, "height", t)} keyboardType="decimal-pad" mono testID={`rebar-run-height-${i}`} />
+            </View>
+          </Row>
+          <Row style={{ gap: spacing.md }}>
+            <View style={{ flex: 1 }}>
+              <Input label="Vert spacing (in)" value={r.vert} onChangeText={(t) => update(i, "vert", t)} keyboardType="decimal-pad" mono testID={`rebar-run-vert-${i}`} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Input label="Horiz spacing (in)" value={r.horiz} onChangeText={(t) => update(i, "horiz", t)} keyboardType="decimal-pad" mono testID={`rebar-run-horiz-${i}`} />
+            </View>
+          </Row>
+          <Row style={{ gap: spacing.md, marginTop: 4 }}>
+            <Text style={typo.label}>Vert <Mono style={{ fontSize: 13 }}>{perRun[i].vertBars}</Mono></Text>
+            <Text style={typo.label}>Horiz <Mono style={{ fontSize: 13 }}>{perRun[i].horizBars}</Mono></Text>
+            <Text style={typo.label}>LF <Mono style={{ fontSize: 13 }}>{perRun[i].totalLf.toFixed(1)}</Mono></Text>
+          </Row>
+        </Card>
+      ))}
+
+      <Button title="+ Add Wall Run" onPress={addRun} variant="outline" testID="rebar-add-run" />
+
+      <View style={{ height: spacing.md }} />
+      <SectionLabel>Bar size</SectionLabel>
       <Card style={{ marginBottom: spacing.md }}>
-        <Row style={{ gap: spacing.md }}>
-          <View style={{ flex: 1 }}>
-            <Input label="Wall L (ft)" value={length} onChangeText={setLength} keyboardType="decimal-pad" mono testID="rebar-length" />
-          </View>
-          <View style={{ flex: 1 }}>
-            <Input label="Wall H (ft)" value={height} onChangeText={setHeight} keyboardType="decimal-pad" mono testID="rebar-height" />
-          </View>
-        </Row>
-        <Row style={{ gap: spacing.md }}>
-          <View style={{ flex: 1 }}>
-            <Input label="Vert spacing (in)" value={vert} onChangeText={setVert} keyboardType="decimal-pad" mono testID="rebar-vert" />
-          </View>
-          <View style={{ flex: 1 }}>
-            <Input label="Horiz spacing (in)" value={horiz} onChangeText={setHoriz} keyboardType="decimal-pad" mono testID="rebar-horiz" />
-          </View>
-        </Row>
-        <SectionLabel>Bar size</SectionLabel>
         <View style={{ flexDirection: "row", gap: 8, marginBottom: spacing.md }}>
           {Object.keys(REBAR_WEIGHT).map((b) => (
             <TouchableOpacity
@@ -219,15 +269,17 @@ function RebarTab() {
         </View>
         <Input label="Stick length (ft)" value={stick} onChangeText={setStick} keyboardType="decimal-pad" mono testID="rebar-stick" />
       </Card>
+
+      <SectionLabel>Totals — all runs</SectionLabel>
       <View style={styles.grid2}>
-        <ResultTile label="Vert bars" value={`${out.vertBars}`} testID="rebar-vertbars" />
-        <ResultTile label="Horiz bars" value={`${out.horizBars}`} testID="rebar-horizbars" />
+        <ResultTile label="Vert bars" value={`${totals.vertBars}`} testID="rebar-vertbars" />
+        <ResultTile label="Horiz bars" value={`${totals.horizBars}`} testID="rebar-horizbars" />
       </View>
       <View style={styles.grid2}>
-        <ResultTile label="Total lf" value={`${out.totalLf.toFixed(1)}`} testID="rebar-totallf" />
-        <ResultTile label="Weight (lb)" value={`${out.weightLb.toFixed(1)}`} testID="rebar-weight" />
+        <ResultTile label="Total lf" value={`${totals.totalLf.toFixed(1)}`} testID="rebar-totallf" />
+        <ResultTile label="Weight (lb)" value={`${totals.weightLb.toFixed(1)}`} testID="rebar-weight" />
       </View>
-      <ResultTile label="Sticks needed" value={`${out.sticks}`} accent testID="rebar-sticks" />
+      <ResultTile label="Sticks needed" value={`${totals.sticks}`} accent testID="rebar-sticks" />
     </>
   );
 }
