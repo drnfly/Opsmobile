@@ -94,9 +94,12 @@ export default function RentalsScreen() {
   const generatePDF = async (r: Rental) => {
     const totalDays = Math.max(1, Math.ceil((+new Date(r.due_date) - +new Date(r.start_date)) / 86400000));
     const lineRows = r.lines.map((l) =>
-      `<tr><td>${l.sku}</td><td>${l.name}</td><td style="text-align:right">${l.qty}</td><td style="text-align:right">$${l.daily_rate.toFixed(2)}/d</td><td style="text-align:right">$${(l.qty * l.daily_rate * totalDays).toFixed(2)}</td></tr>`
+      `<tr><td>${l.sku}</td><td>${l.name}</td><td style="text-align:right">${l.qty}</td></tr>`
     ).join("");
-    const subtotal = r.lines.reduce((s, l) => s + l.qty * l.daily_rate * totalDays, 0);
+
+    const logoHtml = site?.logo_base64
+      ? `<img src="${site.logo_base64}" style="max-height:72px;max-width:160px;object-fit:contain;margin-right:16px"/>`
+      : `<div class="tile"></div>`;
 
     const html = `
 <!doctype html><html><head><meta charset="utf-8"/><style>
@@ -109,11 +112,10 @@ h1 { margin:0; font-size:24px; letter-spacing:1px; text-transform:uppercase; }
 table { width:100%; border-collapse:collapse; margin-top:8px; }
 th, td { padding:10px 8px; border-bottom:1px solid #E4E4E7; font-size:13px; }
 th { background:#F4F4F5; text-transform:uppercase; font-size:10px; letter-spacing:1px; text-align:left; }
-.totals { display:flex; justify-content:space-between; margin-top:16px; font-family: monospace; }
 .sig { margin-top:48px; display:flex; gap:24px; }
 .sig div { flex:1; border-top: 1px solid #09090B; padding-top:6px; font-size:11px; text-transform:uppercase; letter-spacing:1px; }
 </style></head><body>
-<div class="brand"><div class="tile"></div><div><h1>${site?.brand_name || "Concrete Form"} — Delivery Ticket</h1><div class="label">${site?.tagline || ""}</div></div></div>
+<div class="brand">${logoHtml}<div><h1>${site?.brand_name || "Concrete Form"} — Delivery Ticket</h1><div class="label">${site?.tagline || ""}</div></div></div>
 <div class="box">
   <div class="label">Customer</div>
   <div style="font-size:18px;font-weight:800;margin-top:4px">${r.customer_name}</div>
@@ -125,24 +127,30 @@ th { background:#F4F4F5; text-transform:uppercase; font-size:10px; letter-spacin
   <div>Start: ${new Date(r.start_date).toLocaleDateString()} · Due: ${new Date(r.due_date).toLocaleDateString()} · ${totalDays} day${totalDays>1?"s":""}</div>
 </div>
 <table>
-  <thead><tr><th>SKU</th><th>Description</th><th style="text-align:right">Qty</th><th style="text-align:right">Rate</th><th style="text-align:right">Subtotal</th></tr></thead>
+  <thead><tr><th>SKU</th><th>Description</th><th style="text-align:right">Qty</th></tr></thead>
   <tbody>${lineRows}</tbody>
 </table>
-<div class="totals"><div>DEPOSIT $${(r.deposit || 0).toFixed(2)}</div><div><b>SUBTOTAL $${subtotal.toFixed(2)}</b></div></div>
 ${r.notes ? `<div class="box" style="margin-top:24px"><div class="label">Notes</div><div>${r.notes}</div></div>` : ""}
 <div class="sig"><div>Delivered by</div><div>Received by (signature)</div></div>
 <div style="margin-top:32px;font-size:10px;color:#A1A1AA">${site?.company_address || ""} · ${site?.company_phone || ""} · ${site?.company_email || ""}</div>
 </body></html>`;
 
     try {
-      const { uri } = await Print.printToFileAsync({ html });
       if (Platform.OS === "web") {
-        // open print
         await Print.printAsync({ html });
-      } else if (await Sharing.isAvailableAsync()) {
-        await Sharing.shareAsync(uri, { mimeType: "application/pdf", dialogTitle: "Delivery Ticket" });
+      } else {
+        const { uri } = await Print.printToFileAsync({ html });
+        if (await Sharing.isAvailableAsync()) {
+          await Sharing.shareAsync(uri, {
+            mimeType: "application/pdf",
+            UTI: "com.adobe.pdf",
+            dialogTitle: "Delivery Ticket",
+          });
+        }
       }
-    } catch (e: any) { Alert.alert("PDF failed", e.message); }
+    } catch (e: any) {
+      Alert.alert("PDF failed", e?.message || "Unable to generate PDF");
+    }
   };
 
   return (
